@@ -24,7 +24,24 @@ const students = {
             { "sno": 3, "no": "RF6122303", "date": "10/08/2026", "amount": "76000" }
         ]
     },
-    // NEW ADDITION: Kadam Krushna Kailas
+    // NEW ADDITION: Shubh Tomar
+    "A03176821099": {
+        "id": "A03176821099",
+        "name": "Shubh Tomar",
+        "fatherName": "Pramod Tomar",
+        "motherName": "Mrs. Tomar",
+        "dob": "01-10-2008",
+        "gender": "Male",
+        "program": "BPES",
+        "session": "2024-2027",
+        "semester": 1,
+        "education": { "tenth": 2022, "twelfth": 2024 },
+        "photo": "../assets/photos/shubh.jpeg",
+        "idCard": "../assets/ids/shubh.jpeg",
+        "attendance": { "overall": 85, "lastMonth": 82 },
+        "results": [{ "sem": 1, "sgpa": 7.32, "cgpa": 7.32, "back": 0 }],
+        "feeReceipts": [{ "sno": 1, "no": "RF6099199", "date": "12/08/2024", "amount": "73000" }]
+    },
     "A03176821088": {
         "id": "A03176821088",
         "name": "Kadam Krushna Kailas",
@@ -41,7 +58,6 @@ const students = {
         "results": [{ "sem": 1, "sgpa": 6.85, "cgpa": 6.85, "back": 0 }],
         "feeReceipts": [{ "sno": 1, "no": "RF6099110", "date": "10/08/2025", "amount": "73000" }]
     },
-    // NEW ADDITION: Kshitij Negi
     "A03176821095": {
         "id": "A03176821095",
         "name": "Kshitij Negi",
@@ -58,7 +74,6 @@ const students = {
         "results": [{ "sem": 1, "sgpa": 7.42, "cgpa": 7.42, "back": 0 }],
         "feeReceipts": [{ "sno": 1, "no": "RF6099115", "date": "12/08/2025", "amount": "73000" }]
     },
-    // UPDATED: Kishan Kanhaiya with Bihar Address and 10/12 years
     "A03176829999": {
         "id": "A03176829999",
         "name": "Kishan Kanhaiya",
