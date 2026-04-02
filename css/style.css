@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+/* Global Font Scaling */
+:root {
+    font-size: 16px; 
+}
+
+body { 
+    font-family: 'Open Sans', Arial, sans-serif; 
+    -webkit-font-smoothing: antialiased;
+    background-color: #e9ebee;
+}
+
+/* Skeleton Loading Animation */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.animate-pulse {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+#skeleton-screen {
+    transition: opacity 0.5s ease-out;
+    pointer-events: none; /* Prevents skeleton from blocking clicks during fade */
+}
+
+/* Amizone specific cards */
+.am-card { 
+    background: #fff; 
+    border: 1px solid #d1d5db; 
+    border-radius: 8px; 
+    margin-bottom: 15px; 
+    overflow: hidden;
+}
+
+.am-card-header { 
+    background: #f6f7f8; 
+    padding: 12px 15px; 
+    font-size: 15px; 
+    font-weight: 700; 
+    color: #005689; 
+    border-bottom: 1px solid #d1d5db; 
+}
+
+.am-card-body { 
+    padding: 15px; 
+    font-size: 14px; 
+}
+
+/* Tables */
+.am-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.am-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    font-size: 14px; 
+}
+
+.am-table th { 
+    background: #f9f9f9; 
+    color: #333; 
+    font-weight: bold; 
+    padding: 12px 10px; 
+    border: 1px solid #ddd; 
+    text-align: left; 
+    white-space: nowrap;
+}
+
+.am-table td { 
+    padding: 12px 10px; 
+    border: 1px solid #ddd; 
+    color: #555; 
+}
+
+/* Dropdown Menu Shadow and Arrow Styling */
+#profile-dropdown {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    transform-origin: top right;
+    animation: dropdownPop 0.2s ease-out;
+}
+
+@keyframes dropdownPop {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive Footer Padding for small screens */
+@media (max-width: 640px) {
+    footer {
+        padding-bottom: 30px !important;
+    }
+}
+
+/* Profile Form Fixes */
+@media (max-width: 768px) {
+    .form-input, .form-label {
+        font-size: 16px !important; 
+    }
+}

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Amizone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Custom Scrollbar for dense cards */
+        .am-scroll::-webkit-scrollbar { width: 4px; }
+        .am-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        /* Dashboard Widget Tabs */
+        .dash-tab { padding: 8px 12px; font-size: 12px; color: #777; font-weight: bold; border-bottom: 2px solid transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .dash-tab.active { color: #005689; border-bottom-color: #005689; }
+        .dash-badge { background: #d9534f; color: white; border-radius: 50%; padding: 2px 6px; font-size: 9px; margin-left: 5px; }
+
+        /* Timetable specific styles */
+        .tt-item { border-bottom: 1px solid #eee; padding: 10px 5px; transition: background 0.2s; }
+        .tt-item:hover { background: #f8fafc; }
+        .tt-time { font-size: 11px; color: #666; font-weight: bold; min-width: 85px; }
+        .tt-subject { font-size: 13px; font-weight: bold; color: #005689; }
+        .tt-room { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 600; }
+        .tt-tag { font-size: 9px; background: #ecfaf0; color: #5cb85c; padding: 1px 6px; border-radius: 10px; font-weight: 800; }
+
+        /* Subject Attendance list */
+        .sub-att-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px dashed #eee; font-size: 11px; }
+        .sub-att-name { color: #555; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 70%; }
+        .sub-att-pct { font-weight: 700; color: #005689; }
+    </style>
+</head>
+<body>
+    <div class="p-3 bg-[#e9ebee] min-h-screen">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
+            
+            <div class="h-[105px] rounded p-4 text-white relative shadow-sm flex items-center justify-center transition-transform hover:scale-[1.01]" style="background: #3ed7a5;">
+                <span class="text-[17px] font-semibold tracking-wide">Attendance</span>
+                <div id="dyn-attendance" class="hidden">82</div>
+            </div>
+            
+            <div class="h-[105px] rounded p-4 text-white relative shadow-sm flex items-center justify-center transition-transform hover:scale-[1.01]" style="background: #fd5e7c;">
+                <span class="text-[17px] font-semibold tracking-wide">No Fee Due</span>
+            </div>
+            
+            <div class="h-[105px] rounded p-4 text-white relative shadow-sm transition-transform hover:scale-[1.01]" style="background: #5aa5f8;">
+                <div class="flex items-center space-x-4 h-full pl-2">
+                    <div class="w-[45px] h-[45px] bg-[#4a8cd4] rounded-full flex items-center justify-center border-2 border-[#8cc3fc] shadow-inner">
+                        <i class="fas fa-shield-alt text-xl text-white opacity-90"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[14px] font-medium leading-tight">Achievements</span>
+                        <span class="text-[22px] font-bold" id="dyn-achievements">0</span>
+                    </div>
+                </div>
+                <button class="absolute bottom-2 right-2 bg-[#7ebcfb] hover:bg-[#337ab7] text-white text-[10px] px-2 py-1 rounded transition">Add Achievement</button>
+            </div>
+            
+            <div class="h-[105px] rounded p-3 text-white relative shadow-sm flex flex-col justify-center transition-transform hover:scale-[1.01]" style="background: #ffb64d;">
+                <div class="text-center">
+                    <div class="text-[13px] font-semibold leading-snug">Course on Personal Branding<br>and Image management</div>
+                    <div class="text-[9px] mt-1.5 opacity-90">Class day and timings : Thursday 2.15 p. m</div>
+                </div>
+                <button class="absolute bottom-3 right-3 bg-[#337ab7] hover:bg-[#286090] text-white text-[10px] px-3 py-1 rounded-full font-bold shadow-md transition">Click here</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+            
+            <div class="am-card mb-0 shadow-sm border border-[#d1d5db]">
+                <div class="am-card-header bg-[#f6f7f8] py-2 text-[#2c3e50] font-bold text-[14px]">My Classes</div>
+                <div class="p-3">
+                    <div class="flex items-center mb-3">
+                        <div class="flex border border-gray-300 rounded shadow-sm overflow-hidden bg-white">
+                            <button class="px-3 py-1 text-[#337ab7] hover:bg-gray-100 border-r border-gray-300"><i class="fas fa-caret-left"></i></button>
+                            <button class="px-3 py-1 text-[#337ab7] hover:bg-gray-100 border-r border-gray-300"><i class="fas fa-caret-right"></i></button>
+                            <button class="px-3 py-1 text-[#337ab7] hover:bg-gray-100"><i class="far fa-calendar-alt"></i></button>
+                        </div>
+                        <div class="flex-1 text-center font-bold text-[#333] text-[15px]">April 2, 2026</div>
+                    </div>
+                    
+                    <div class="bg-white border border-[#e5e5e5] h-[220px] overflow-y-auto am-scroll rounded-sm">
+                        <div class="tt-item flex items-center">
+                            <div class="tt-time">09:15 - 10:10</div>
+                            <div class="flex-1">
+                                <div class="tt-subject" id="tt-sub-1">BPE301 - KINESIOLOGY</div>
+                                <div class="tt-room">Lecture | Room: L-302 | Block: E-3</div>
+                            </div>
+                            <div class="tt-tag">Active</div>
+                        </div>
+                        <div class="tt-item flex items-center">
+                            <div class="tt-time">10:10 - 11:05</div>
+                            <div class="flex-1">
+                                <div class="tt-subject" id="tt-sub-2">BPE302 - SPORTS PSYCHOLOGY</div>
+                                <div class="tt-room">Lecture | Room: L-302 | Block: E-3</div>
+                            </div>
+                            <div class="tt-tag">Active</div>
+                        </div>
+                        <div class="tt-item flex items-center">
+                            <div class="tt-time">11:15 - 13:05</div>
+                            <div class="flex-1">
+                                <div class="tt-subject" id="tt-sub-3">BPE351 - GYMNASTICS (PR)</div>
+                                <div class="tt-room">Practical | Gymnasium | Sports Complex</div>
+                            </div>
+                            <div class="tt-tag">Active</div>
+                        </div>
+                        <div class="tt-item flex items-center">
+                            <div class="tt-time">14:15 - 15:10</div>
+                            <div class="flex-1">
+                                <div class="tt-subject" id="tt-sub-4">BS101 - BEHAVIORAL SCIENCE</div>
+                                <div class="tt-room">Lecture | Room: E-101 | Block: E-1</div>
+                            </div>
+                            <div class="tt-tag">Active</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-card mb-0 shadow-sm border border-[#d1d5db]">
+                <div class="am-card-header bg-[#f6f7f8] py-2 text-[#2c3e50] font-bold text-[14px]">My Attendance</div>
+                <div class="p-3">
+                    <div class="flex items-center justify-center h-[180px] relative">
+                        <svg viewBox="0 0 36 36" class="w-40 h-40">
+                            <path stroke="#d9534f" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="dyn-att-circle" stroke="#5cb85c" stroke-width="3" stroke-dasharray="82, 100" stroke-linecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute flex flex-col items-center justify-center mt-1">
+                            <span class="text-3xl font-black text-[#333]" id="dyn-att-text">82%</span>
+                            <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Overall</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-2 border-t pt-2 h-[85px] overflow-y-auto am-scroll" id="dyn-sub-attendance">
+                        <div class="sub-att-item">
+                            <span class="sub-att-name">BPE301 - KINESIOLOGY</span>
+                            <span class="sub-att-pct">85%</span>
+                        </div>
+                        <div class="sub-att-item">
+                            <span class="sub-att-name">BPE302 - SPORTS PSYCHOLOGY</span>
+                            <span class="sub-att-pct">78%</span>
+                        </div>
+                        <div class="sub-att-item">
+                            <span class="sub-att-name">BPE351 - GYMNASTICS</span>
+                            <span class="sub-att-pct">92%</span>
+                        </div>
+                        <div class="sub-att-item">
+                            <span class="sub-att-name">BS101 - BEHAVIORAL SCIENCE</span>
+                            <span class="sub-att-pct">74%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+            
+            <div class="lg:col-span-9 space-y-3">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="am-card mb-0 shadow-sm">
+                        <div class="am-card-header bg-[#f6f7f8] py-2">Amity Central Library(OPAC)</div>
+                        <div class="am-card-body p-3 text-[11px]">
+                            <p class="mb-1"><i class="fas fa-user text-[#d9534f] mr-1"></i><b>User-id :</b> 194652</p>
+                            <p class="mb-3"><i class="fas fa-key text-[#5cb85c] mr-1"></i><b>Password :</b> <span class="text-[#337ab7] cursor-pointer">Show</span></p>
+                            <p class="mb-3 text-[#555]"><span class="text-[#337ab7] font-bold">EBSCO Online : </span><span class="text-[#d9534f]">Business Journal :</span> 2,300 journals, more than 1,100 peer-reviewed</p>
+                            <div class="flex space-x-2">
+                                <button class="bg-[#337ab7] text-white px-3 py-1.5 rounded text-[10px]"><i class="fas fa-book mr-1"></i> eLibrary</button>
+                                <button class="bg-[#337ab7] text-white px-3 py-1.5 rounded text-[10px] flex-1 text-right">Read more <i class="fas fa-arrow-right ml-1"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="am-card mb-0 shadow-sm">
+                        <div class="am-card-header bg-[#f6f7f8] py-2">Email</div>
+                        <div class="am-card-body p-3 text-[11px]">
+                            <p class="mb-1 truncate"><i class="fas fa-envelope text-[#d9534f] mr-1"></i><b>Email-id :</b> <span class="text-[#337ab7]">student.council@s.amity.edu</span></p>
+                            <p class="mb-6"><i class="fas fa-key text-[#5cb85c] mr-1"></i><b>Password :</b> <span class="text-[#337ab7] cursor-pointer">Show</span></p>
+                            <div class="flex space-x-2 mt-4">
+                                <button class="bg-[#f0ad4e] hover:bg-[#ec971f] text-white px-3 py-1.5 rounded text-[10px] flex-1 transition"><i class="fas fa-envelope-open mr-1"></i> Check Emails</button>
+                                <button class="bg-[#337ab7] hover:bg-[#286090] text-white px-3 py-1.5 rounded text-[10px] flex-1 transition"><i class="fab fa-microsoft mr-1"></i> Office 365</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="am-card mb-0 shadow-sm">
+                        <div class="am-card-header bg-[#f6f7f8] py-2">LMS</div>
+                        <div class="am-card-body p-3 text-[11px]">
+                            <p class="text-[#555] mb-3 leading-tight">Access session plans, course materials, Internal Assessments etc.</p>
+                            <button class="w-full bg-[#5cb85c] hover:bg-[#449d44] text-white py-1.5 rounded text-left px-3 mb-1.5 shadow-sm transition"><i class="fas fa-book-open mr-1"></i> 2025-2026/Even</button>
+                            <button class="w-full bg-[#5cb85c] text-white py-1.5 rounded text-left px-3 opacity-80 shadow-sm cursor-not-allowed"><i class="fas fa-book-open mr-1"></i> 2025-2026/Odd</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    
+                    <div class="am-card mb-0 shadow-sm">
+                        <div class="border-b flex items-center bg-[#f6f7f8]">
+                            <div class="p-2 text-[#b02c81] font-bold text-[12px] flex items-center w-[30%]"><i class="fas fa-bell mr-2"></i> Notices</div>
+                            <div class="flex-1 flex border-l">
+                                <div class="dash-tab active w-1/2">Notices <span class="dash-badge">6</span></div>
+                                <div class="dash-tab w-1/2">Exam Notices <span class="dash-badge">9</span></div>
+                            </div>
+                        </div>
+                        <div class="am-card-body p-0 h-[220px] overflow-y-auto am-scroll">
+                            <div class="p-3 border-b hover:bg-gray-50 transition">
+                                <p class="text-[11px] text-[#6b318a] font-bold leading-tight"><i class="fas fa-bell text-[#5cb85c] text-[10px] mr-1"></i> summer semester 2026 timelines</p>
+                                <p class="text-[10px] text-[#d9534f] mt-1"><i class="far fa-clock mr-1"></i> 23 mar 2026</p>
+                                <p class="text-[10px] text-[#555] mt-1 truncate">summer semester 2026 timelines</p>
+                            </div>
+                            <div class="p-3 border-b hover:bg-gray-50 transition">
+                                <p class="text-[11px] text-[#6b318a] font-bold leading-tight"><i class="fas fa-bell text-[#5cb85c] text-[10px] mr-1"></i> submission of pre-examination faculty feedback-for 4,6,8&10th sem-even sem ay 2025-26-noida,lko&augn</p>
+                                <p class="text-[10px] text-[#d9534f] mt-1"><i class="far fa-clock mr-1"></i> 12 mar 2026</p>
+                                <p class="text-[10px] text-[#555] mt-1 truncate">notice online submission of "pre-examination faculty feedback" an...</p>
+                            </div>
+                            <div class="p-3 border-b hover:bg-gray-50 transition">
+                                <p class="text-[11px] text-[#6b318a] font-bold leading-tight"><i class="fas fa-bell text-[#5cb85c] text-[10px] mr-1"></i> indemnity bond by ph.d scholar - applicable for first semester registration</p>
+                                <p class="text-[10px] text-[#d9534f] mt-1"><i class="far fa-clock mr-1"></i> 04 feb 2026</p>
+                                <p class="text-[10px] text-[#555] mt-1 truncate">indemnity bond by ph.d scholar (where parents are not available/a...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="am-card mb-0 shadow-sm">
+                        <div class="border-b flex items-center bg-[#f6f7f8]">
+                            <div class="p-2 text-[#6b318a] font-bold text-[12px] flex items-center w-[30%]"><i class="fas fa-calendar-alt mr-2"></i> Events</div>
+                            <div class="flex-1 flex border-l">
+                                <div class="dash-tab active w-1/2">Happenings <span class="dash-badge">0</span></div>
+                                <div class="dash-tab w-1/2">Upcoming <span class="dash-badge bg-gray-400">30</span></div>
+                            </div>
+                        </div>
+                        <div class="am-card-body h-[220px] flex items-center justify-center">
+                            <p class="text-[16px] text-[#333]">No Happening exists for you.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="lg:col-span-3 space-y-3 flex flex-col">
+                
+                <div class="am-card mb-0 shadow-sm">
+                    <div class="am-card-header bg-[#f6f7f8] py-2">Student Research</div>
+                    <div class="am-card-body p-3">
+                        <button class="bg-[#f0ad4e] hover:bg-[#ec971f] text-white px-3 py-1.5 rounded text-[11px] shadow-sm transition">View Notices</button>
+                    </div>
+                </div>
+
+                <div class="am-card mb-0 shadow-sm flex-1">
+                    <div class="am-card-header bg-[#f6f7f8] py-2">Chancellor's Message</div>
+                    <div class="am-card-body p-3 text-[10.5px] text-[#000] leading-relaxed text-justify relative">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Atul_Chauhan.jpg/220px-Atul_Chauhan.jpg" class="w-14 h-14 rounded-full float-right ml-2 mb-1 border-2 border-white shadow-md object-cover">
+                        <p class="font-bold mb-2"><i class="fas fa-quote-left text-2xl text-gray-300 float-left mr-2 mt-1"></i> Dear Students,</p>
+                        <p class="mb-2">I would like share the announcement I made at the inaugural function of Sangathan 2024 - that this year will be dedicated to Student Success and Student Happiness. Right from the inception, the focus of everything at Amity has been the success of our students. To give you the best of professional knowledge, behavioural science, values and sanskars and all the life skills needed to be truly successful in life.</p>
+                        <p>As we are about to enter the 20th year of establishment of Amity University Uttar Pradesh (which we all will be celebrating in grand ways throughout 2025), we will go through an extensive exercise of reimagining and reinforcing how we look at the success and happiness of our students. The first step will be the establishment of the Office of Student Success so that it is very clear to everyone what our focus is. Extensive dialogues with all stakeholders - students, parents, faculty, staff, etc will be...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="h-[80px] bg-[#005689] text-white flex flex-col justify-center items-center text-center p-2 rounded shadow-sm border border-gray-300 hover:shadow-md transition cursor-pointer">
+                <span class="text-[10px] font-bold uppercase mb-1">Amity Institute For Competitive Examinations</span>
+                <span class="bg-[#fdb913] text-black text-[8px] font-bold px-1 rounded">ADMISSIONS OPEN FOR CAT, GMAT, GRE</span>
+            </div>
+            <div class="h-[80px] bg-[#fdb913] text-[#005689] flex flex-col justify-center items-center text-center p-2 rounded shadow-sm border border-gray-300 hover:shadow-md transition cursor-pointer">
+                <span class="text-[12px] font-black uppercase leading-tight">Direct Admission to<br>Amity Graduates</span>
+                <span class="text-[7px] mt-1 text-black">With specified criteria and scholarships.</span>
+            </div>
+            <div class="h-[80px] bg-[#002f5c] text-white flex flex-col justify-center items-center text-center p-2 rounded shadow-sm border border-gray-300 hover:shadow-md transition cursor-pointer">
+                <span class="text-[14px] font-serif font-bold uppercase tracking-widest">AMITY</span>
+                <span class="text-[9px] uppercase tracking-widest mt-0.5">University</span>
+            </div>
+            <div class="h-[80px] bg-gradient-to-r from-purple-800 to-pink-600 text-white flex flex-col justify-center items-center text-center p-2 rounded shadow-sm border border-gray-300 hover:shadow-md transition cursor-pointer">
+                <span class="text-[11px] font-bold uppercase">Amity Map Download Now</span>
+                <div class="flex space-x-1 mt-1">
+                    <span class="bg-black text-[7px] px-1 rounded border border-white">App Store</span>
+                    <span class="bg-black text-[7px] px-1 rounded border border-white">Google Play</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <script src="../js/data.js"></script>
+    <script src="../js/app.js"></script>
+</body>
+</html>

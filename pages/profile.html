@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile | Amizone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Profile Tabs */
+        .profile-tabs { background: #337ab7; color: white; display: flex; font-size: 14px; font-weight: bold; border-top-left-radius: 3px; border-top-right-radius: 3px; overflow-x: auto; scrollbar-width: none; }
+        .profile-tabs::-webkit-scrollbar { display: none; }
+        .p-tab { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; white-space: nowrap; border-top: 3px solid transparent; transition: all 0.2s; }
+        .p-tab.active { background: #fff; color: #337ab7; border-top-color: #d9534f; }
+        .p-tab-icon { margin-right: 8px; font-size: 14px; }
+        
+        /* Form Elements */
+        .form-label { font-size: 11px; color: #777; margin-bottom: 4px; display: block; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-input { width: 100%; background: #fdfdfd; border: 1px solid #ddd; color: #333; padding: 8px 12px; font-size: 14px; border-radius: 2px; outline: none; height: 38px; cursor: default; }
+        
+        /* Data Tables */
+        .am-table-prof { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+        .am-table-prof th { background: #f5f5f5; color: #333; font-weight: bold; padding: 12px 10px; border: 1px solid #ddd; text-align: left; }
+        .am-table-prof td { padding: 12px 10px; border: 1px solid #ddd; color: #555; background: #fff; }
+
+        .profile-photo-frame {
+            width: 200px;
+            height: 240px;
+            border: 1px solid #ddd;
+            padding: 4px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-[#e9ebee]">
+    <div id="page-content" class="p-4 bg-[#e9ebee] min-h-[calc(100vh-65px)]">
+
+        <div class="bg-white border border-gray-300 rounded shadow-sm">
+            
+            <div class="profile-tabs" id="tab-container">
+                <div class="p-tab active" onclick="switchTab('personal', this)"><i class="fas fa-user p-tab-icon"></i> Personal</div>
+                <div class="p-tab" onclick="switchTab('educational', this)"><i class="fas fa-graduation-cap p-tab-icon"></i> Educational</div>
+                <div class="p-tab" onclick="switchTab('medical', this)"><i class="fas fa-notes-medical p-tab-icon"></i> Medical</div>
+                <div class="p-tab" onclick="switchTab('family', this)"><i class="fas fa-users p-tab-icon"></i> Family Details</div>
+                <div class="p-tab" onclick="switchTab('guardian', this)"><i class="fas fa-shield-alt p-tab-icon"></i> Local Guardian</div>
+                <div class="p-tab" onclick="switchTab('bank', this)"><i class="fas fa-university p-tab-icon"></i> Bank Details</div>
+            </div>
+
+            <div class="p-6 min-h-[480px]">
+                
+                <div id="section-personal" class="profile-section block">
+                    <h3 class="text-[#337ab7] text-[18px] font-bold mb-6 border-b pb-2 uppercase tracking-tight">Basic Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                        <div class="md:col-span-4 flex flex-col items-center">
+                            <div class="profile-photo-frame mb-4">
+                                <img id="dyn-prof-img" src="" class="w-full h-full object-cover" alt="Student Photo">
+                            </div>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full uppercase">Verified Profile</span>
+                        </div>
+                        <div class="md:col-span-8 space-y-5">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="md:col-span-2">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" id="dyn-prof-name" class="form-input font-bold text-[#005689] uppercase" readonly>
+                                </div>
+                                <div>
+                                    <label class="form-label">Date Of Birth</label>
+                                    <input type="text" id="dyn-prof-dob" class="form-input" readonly>
+                                </div>
+                                <div>
+                                    <label class="form-label">Sex</label>
+                                    <input type="text" id="dyn-prof-sex" class="form-input" readonly>
+                                </div>
+                                <div>
+                                    <label class="form-label">Nationality</label>
+                                    <input type="text" value="Indian" class="form-input" readonly>
+                                </div>
+                                <div>
+                                    <label class="form-label">Category</label>
+                                    <input type="text" value="General" class="form-input" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="section-educational" class="profile-section hidden">
+                    <h3 class="text-[#337ab7] text-[18px] font-bold mb-4 border-b pb-2 uppercase tracking-tight">Academic Qualifications</h3>
+                    <div class="overflow-x-auto">
+                        <table class="am-table-prof">
+                            <thead>
+                                <tr>
+                                    <th>Qualification</th>
+                                    <th>Board / University</th>
+                                    <th>Passing Year</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dyn-edu-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="section-family" class="profile-section hidden">
+                    <h3 class="text-[#337ab7] text-[18px] font-bold mb-6 border-b pb-2 uppercase tracking-tight">Family Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4 p-5 border border-gray-100 rounded bg-gray-50/50">
+                            <h4 class="font-bold text-[#d9534f] text-[12px] uppercase border-b pb-2 tracking-widest">Father's Information</h4>
+                            <div><label class="form-label">Father's Name</label><input type="text" id="dyn-prof-father" class="form-input bg-white uppercase" readonly></div>
+                            <div><label class="form-label">Occupation</label><input type="text" value="Service/Business" class="form-input bg-white" readonly></div>
+                        </div>
+                        <div class="space-y-4 p-5 border border-gray-100 rounded bg-gray-50/50">
+                            <h4 class="font-bold text-[#d9534f] text-[12px] uppercase border-b pb-2 tracking-widest">Mother's Information</h4>
+                            <div><label class="form-label">Mother's Name</label><input type="text" id="dyn-prof-mother" class="form-input bg-white uppercase" readonly></div>
+                            <div><label class="form-label">Occupation</label><input type="text" value="Homemaker" class="form-input bg-white" readonly></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="section-medical" class="profile-section hidden">
+                    <h3 class="text-[#337ab7] text-[18px] font-bold mb-6 border-b pb-2 uppercase tracking-tight">Health Records</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
+                        <div><label class="form-label">Blood Group</label><input type="text" id="dyn-prof-blood" class="form-input font-bold text-red-600" readonly></div>
+                        <div><label class="form-label">Medical History</label><input type="text" value="No Major Illness" class="form-input" readonly></div>
+                    </div>
+                </div>
+
+                <div id="section-bank" class="profile-section hidden">
+                    <h3 class="text-[#337ab7] text-[18px] font-bold mb-6 border-b pb-2 uppercase tracking-tight">Bank Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
+                        <div><label class="form-label">Bank Name</label><input type="text" value="HDFC BANK" class="form-input font-bold" readonly></div>
+                        <div><label class="form-label">Account Verification</label><input type="text" value="KYC VERIFIED" class="form-input text-green-600 font-bold" readonly></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const user = typeof getUser === 'function' ? getUser() : null;
+            if(!user) return;
+
+            // 1. Basic Details
+            document.getElementById('dyn-prof-name').value = user.name;
+            document.getElementById('dyn-prof-dob').value = user.dob;
+            document.getElementById('dyn-prof-sex').value = user.gender || "Male";
+            document.getElementById('dyn-prof-father').value = user.fatherName || "N/A";
+            document.getElementById('dyn-prof-mother').value = user.motherName || "N/A";
+            document.getElementById('dyn-prof-blood').value = user.bloodGroup || "B+ve";
+            
+            // 2. Profile Photo
+            const profileImg = document.getElementById('dyn-prof-img');
+            profileImg.src = user.photo;
+            profileImg.onerror = function() {
+                this.src = `https://ui-avatars.com/api/?name=${user.name}&background=005689&color=fff&size=256`;
+            };
+
+            // 3. Dynamic Educational Injection (Uses Session from data.js)
+            const eduBody = document.getElementById('dyn-edu-body');
+            if(user.education) {
+                const programName = user.program || "BPES";
+                const sessionRange = user.session || "2024-2027"; 
+
+                eduBody.innerHTML = `
+                    <tr>
+                        <td class="font-bold">Class X (High School)</td>
+                        <td>CBSE / State Board</td>
+                        <td>${user.education.tenth}</td>
+                        <td class="text-green-600 font-bold"><i class="fas fa-check-circle mr-1"></i> Passed</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Class XII (Intermediate)</td>
+                        <td>CBSE / State Board</td>
+                        <td>${user.education.twelfth}</td>
+                        <td class="text-green-600 font-bold"><i class="fas fa-check-circle mr-1"></i> Passed</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold text-[#005689]">${programName}</td>
+                        <td>Amity University</td>
+                        <td>${sessionRange}</td>
+                        <td class="text-blue-600 font-bold italic">Pursuing</td>
+                    </tr>
+                `;
+            }
+        });
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.profile-section').forEach(section => section.classList.replace('block', 'hidden'));
+            document.querySelectorAll('.p-tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById('section-' + tabId).classList.replace('hidden', 'block');
+            element.classList.add('active');
+        }
+    </script>
+    <script src="../js/app.js"></script>
+</body>
+</html>

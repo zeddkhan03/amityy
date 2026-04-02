@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Digital ID Card | Amizone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* UI Styling */
+        .id-card-wrapper {
+            perspective: 1000px;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.25));
+            /* Increased width from 320px to 380px */
+            width: 380px; 
+            max-width: 95vw; /* Safety for very small phones */
+            transition: transform 0.3s ease;
+        }
+
+        .id-card-render {
+            width: 100%;
+            /* Scaled height to maintain proportion (approx 1.56 aspect ratio) */
+            height: 590px; 
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            position: relative;
+        }
+
+        .lanyard-hole {
+            width: 60px;
+            height: 12px;
+            background: #333;
+            margin: 0 auto 15px;
+            border-radius: 10px;
+        }
+
+        /* Desktop specific: make it even bigger on large screens */
+        @media (min-width: 1024px) {
+            .id-card-wrapper {
+                transform: scale(1.1);
+                margin-top: 40px;
+                margin-bottom: 60px;
+            }
+        }
+
+        /* PRINT LOGIC - Adjusted for larger size */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+
+            #print-area {
+                position: fixed;
+                left: 50%;
+                top: 40px;
+                transform: translateX(-50%);
+                width: 380px;
+                height: 590px;
+                padding: 0;
+                margin: 0;
+            }
+
+            #dyn-id-card-img {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: contain !important;
+                border-radius: 20px;
+            }
+
+            @page {
+                margin: 0;
+                size: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#e9ebee]">
+    <div id="page-content" class="p-6 flex flex-col items-center">
+        
+        <div class="w-full max-w-4xl flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <div>
+                <h2 class="text-[#005689] text-xl font-bold uppercase">Identity Card</h2>
+                <p class="text-gray-500 text-xs font-semibold">Official Student Identification</p>
+            </div>
+            <button onclick="window.print()" class="bg-[#005689] text-white px-6 py-2.5 rounded font-bold flex items-center hover:bg-blue-900 transition shadow-md">
+                <i class="fas fa-print mr-2"></i> PRINT / SAVE PDF
+            </button>
+        </div>
+
+        <div id="print-area" class="id-card-wrapper">
+            <div class="lanyard-hole"></div>
+            <div class="id-card-render">
+                <img id="dyn-id-card-img" src="" alt="Student ID Card" class="w-full h-full object-cover bg-white">
+                
+                <div id="id-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 z-10 hidden">
+                    <i class="fas fa-circle-notch fa-spin text-3xl text-[#005689]"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 p-4 bg-yellow-50 border border-yellow-100 rounded-lg max-w-sm">
+            <p class="text-[11px] text-yellow-800 text-center leading-relaxed">
+                <i class="fas fa-exclamation-triangle mr-1"></i> Ensure "Background Graphics" is <b>enabled</b> in print settings for the best quality.
+            </p>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const user = typeof getUser === 'function' ? getUser() : null;
+            const idImg = document.getElementById('dyn-id-card-img');
+            const loader = document.getElementById('id-loader');
+
+            if (user && user.idCard) {
+                loader.classList.remove('hidden');
+                idImg.src = user.idCard;
+                
+                idImg.onload = () => loader.classList.add('hidden');
+                idImg.onerror = () => {
+                    loader.innerHTML = '<span class="text-xs text-red-500">ID Image Error</span>';
+                };
+            }
+        });
+    </script>
+</body>
+</html>

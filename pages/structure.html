@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Programme Structures | Amizone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .prog-header { background: #337ab7; color: white; padding: 10px 15px; font-size: 14px; margin-bottom: 10px; border-radius: 2px; }
+        .prog-card { border: 1px solid #ccc; padding: 12px 15px; margin-bottom: 10px; font-size: 12px; color: #333; background: #fff; border-radius: 2px; }
+        .syllabus-link { color: #337ab7; text-decoration: none; margin: 0 5px; cursor: pointer; font-weight: bold; }
+        .syllabus-link:hover { text-decoration: underline; }
+        .dark-select { background-color: #4b4b4b; color: #fff; border: 1px solid #333; padding: 5px 10px; border-radius: 4px; outline: none; font-size: 12px; cursor: pointer; }
+    </style>
+</head>
+<body class="bg-[#e9ebee]">
+    <div id="page-content" class="p-3 bg-white m-2 border border-gray-200 min-h-[calc(100vh-65px)]">
+        <div class="text-[12px] text-gray-500 mb-4 flex items-center">
+            <i class="fas fa-home mr-1 text-[#337ab7]"></i> Home <span class="mx-1 text-gray-400">></span> Programme Structures
+        </div>
+
+        <div class="border border-gray-300 rounded shadow-sm bg-[#fcfcfc] pb-6">
+            <div class="flex items-center justify-center p-4 border-b border-gray-200 mb-6 bg-white">
+                <span class="text-[13px] text-[#333] mr-4">Select to View Programme Structures</span>
+                <select id="semester-select" class="dark-select w-32" onchange="renderSemester(this.value)">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div id="prog-container" class="px-6"></div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        function renderSemester(semId) {
+            const user = getUser();
+            const container = document.getElementById('prog-container');
+            const courses = (globalProgramData[user.program] && globalProgramData[user.program][semId]) 
+                            ? globalProgramData[user.program][semId] : null;
+            
+            if (!courses) {
+                container.innerHTML = `<div class="text-center text-gray-500 italic p-10">Data not available for Semester ${semId}</div>`;
+                return;
+            }
+
+            // Logic to group courses by domain for a "legit" look
+            const domains = [...new Set(courses.map(c => c.domain))];
+            let html = '';
+            
+            domains.forEach(domain => {
+                const domainCourses = courses.filter(c => c.domain === domain);
+                const totalCredits = domainCourses.reduce((sum, c) => sum + c.cu, 0);
+
+                html += `
+                    <div class="mb-4">
+                        <div class="prog-header">${domain} Courses [ Credits: ${totalCredits} ]</div>
+                        ${domainCourses.map(c => `
+                            <div class="prog-card">
+                                <span class="font-bold text-blue-700">${c.code}</span> - ${c.title} 
+                                <br>
+                                <span class="text-gray-500">[ CU- ${c.cu}, L- ${c.l}, T- ${c.t}, P- ${c.p} ]</span>
+                                <span class="syllabus-link ml-2">Syllabus</span> 
+                                <div class="mt-1 text-[10px] text-gray-400 uppercase tracking-wider">
+                                    [ Stream : ${c.stream} ]
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const user = getUser();
+            const semSelect = document.getElementById('semester-select');
+            semSelect.value = user.semester;
+            renderSemester(user.semester);
+        });
+    </script>
+    <script src="../js/app.js"></script>
+</body>
+</html>

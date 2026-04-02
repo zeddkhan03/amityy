@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Examination | Amizone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .am-table-exam { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .am-table-exam th { background: #f9f9f9; color: #333; font-weight: bold; padding: 8px 10px; border: 1px solid #ddd; text-align: left; }
+        .am-table-exam td { padding: 8px 10px; border: 1px solid #ddd; color: #555; }
+        .am-table-exam tr:nth-child(even) { background-color: #fcfcfc; }
+        .am-table-exam tr:hover { background-color: #f5f5f5; }
+        .legend-box { border: 1px solid #ddd; padding: 15px; font-size: 11px; color: #333; background: #fff; }
+        .legend-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .legend-table td, .legend-table th { border: 1px solid #ddd; padding: 6px 10px; text-align: left; }
+        .legend-table th { background: #f9f9f9; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-[#e9ebee]">
+    <div id="page-content" class="p-4 bg-white m-2 border border-gray-200 min-h-[calc(100vh-65px)]">
+        <div class="text-[12px] text-gray-500 mb-2 flex items-center border-b pb-2">
+            <i class="fas fa-home mr-1 text-[#337ab7]"></i> <span class="text-[#337ab7]">Home</span> <span class="mx-1">></span> Examination
+        </div>
+
+        <h2 class="text-[#337ab7] text-[22px] mb-4">Examination</h2>
+        
+        <div class="text-[13px] text-[#333] mb-4 font-bold leading-relaxed">
+            1. Name <span id="dyn-exam-name">...</span><br>
+            2. Enrollment No. <span id="dyn-exam-id">...</span>
+        </div>
+
+        <div class="border border-gray-300 rounded mb-8 shadow-sm">
+            <div class="bg-[#f9f9f9] p-3 flex items-center justify-center border-b border-gray-300">
+                <span class="text-[13px] font-bold text-[#333] mr-3">Semester Exam Result :</span>
+                <select id="semesterDropdown" class="border border-gray-300 p-1 text-[13px] bg-white rounded w-20 outline-none" onchange="renderExamTable(this.value)"></select>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="am-table-exam min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Sno</th><th>Course Code</th><th>Course Title</th><th>Max Total</th>
+                            <th>ACU</th><th>Go</th><th>GP</th><th>CP</th><th>ECU</th><th>PublishDate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="exam-results-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto mb-8 shadow-sm">
+            <table class="am-table-exam min-w-full text-center">
+                <thead>
+                    <tr class="font-bold bg-gray-100">
+                        <th>Semester</th><th>SGPA</th><th>CGPA</th><th>Back Papers</th>
+                    </tr>
+                </thead>
+                <tbody id="sgpa-body"></tbody>
+            </table>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="legend-box">
+                <p class="mb-4 text-justify">The results published on net are for immediate information to the examinees. These cannot be treated as original mark sheets.</p>
+                <table class="legend-table">
+                    <thead><tr><th colspan="2">Abbreviation :</th></tr></thead>
+                    <tbody>
+                        <tr><td class="w-24">AB</td><td>Absent</td></tr>
+                        <tr><td>RL</td><td>Result Later</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="legend-box">
+                <table class="legend-table mt-0">
+                    <thead><tr><th class="w-24">Column</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td>ACU</td><td>Associated Credit Units</td></tr>
+                        <tr><td>GP</td><td>Grade Points</td></tr>
+                        <tr><td>CP</td><td>Credit Points (ACU x GP)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const user = getUser();
+            document.getElementById('dyn-exam-name').innerText = user.name;
+            document.getElementById('dyn-exam-id').innerText = user.id;
+
+            const sgpaBody = document.getElementById('sgpa-body');
+            const dropdown = document.getElementById('semesterDropdown');
+            
+            if(user.results && user.results.length > 0) {
+                sgpaBody.innerHTML = user.results.map(s => `
+                    <tr>
+                        <td>${s.sem}</td>
+                        <td class="font-bold text-blue-700">${s.sgpa}</td>
+                        <td>${s.cgpa}</td>
+                        <td>${s.back}</td>
+                    </tr>
+                `).join('');
+
+                const sems = user.results.map(s => s.sem).reverse();
+                dropdown.innerHTML = sems.map(s => `<option value="${s}">${s}</option>`).join('');
+                renderExamTable(sems[0]);
+            }
+        });
+
+        function renderExamTable(sem) {
+            const user = getUser();
+            const tbody = document.getElementById('exam-results-body');
+            
+            // Get courses from globalCourseData based on program
+            const courses = (globalProgramData[user.program] && globalProgramData[user.program][sem]) 
+                            ? globalProgramData[user.program][sem] : [];
+
+            // Get the SGPA for that sem to make fake grades believable
+            const semData = user.results.find(r => r.sem == sem);
+            const baseGP = semData ? Math.floor(semData.sgpa) : 7;
+
+            tbody.innerHTML = courses.map((c, i) => {
+                const gp = baseGP + (i % 2); // Variation
+                const grade = gp >= 9 ? 'A+' : gp >= 8 ? 'A' : 'B+';
+                return `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td class="font-bold">${c.code}</td>
+                        <td class="uppercase">${c.title}</td>
+                        <td>100</td>
+                        <td>${c.cu}</td>
+                        <td class="font-bold text-blue-800">${grade}</td>
+                        <td>${gp}</td>
+                        <td>${c.cu * gp}</td>
+                        <td>${c.cu}</td>
+                        <td>24/01/2026</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+    </script>
+    <script src="../js/app.js"></script>
+</body>
+</html>

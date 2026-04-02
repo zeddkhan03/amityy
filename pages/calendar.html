@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendar | Amizone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Calendar Specific Overrides */
+        .cal-btn { border: 1px solid #ccc; background: white; color: #337ab7; padding: 4px 10px; font-size: 12px; cursor: pointer; transition: background 0.2s; }
+        .cal-btn:hover { background: #f4f4f4; }
+        .cal-btn-group .cal-btn { float: left; }
+        .cal-btn-group .cal-btn:not(:first-child) { border-left: none; }
+        .cal-btn-group .cal-btn:first-child { border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
+        .cal-btn-group .cal-btn:last-child { border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
+        .cal-btn.active { box-shadow: inset 0 3px 5px rgba(0,0,0,.125); background-color: #e6e6e6; border-color: #adadad; }
+        
+        /* Grid Cells */
+        .cal-cell { height: 110px; border: 1px solid #ddd; padding: 2px; position: relative; vertical-align: top; width: 14.28%; }
+        .cal-date { position: absolute; top: 4px; right: 6px; font-size: 11px; color: #337ab7; }
+        
+        /* Event Pills */
+        .event-pill { font-size: 9.5px; font-weight: bold; padding: 1.5px 4px; margin-bottom: 2px; border-radius: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; line-height: 1.2; margin-top: 1px;}
+        .event-green { background-color: #dff0d8; color: #3c763d; }
+        .event-yellow { background-color: #fcf8e3; color: #8a6d3b; }
+        .event-red-text { background-color: #fcf8e3; color: #a94442; }
+    </style>
+</head>
+<body>
+    <!-- THIS CONTENT IS INJECTED INTO THE MAIN AREA BY APP.JS -->
+    <div class="p-3 bg-white m-2 border border-gray-200 h-[calc(100vh-65px)] overflow-y-auto">
+        
+        <!-- Breadcrumb -->
+        <div class="text-[12px] text-gray-500 mb-3 flex items-center">
+            <i class="fas fa-home mr-1"></i> Home <span class="mx-1 text-gray-400">></span> Calendar
+        </div>
+
+        <!-- Main Calendar Card -->
+        <div class="border border-gray-300 rounded shadow-sm">
+            
+            <!-- Blue Header (Exact match including "Calender" typo) -->
+            <div class="bg-[#337ab7] text-white p-2 text-[13px] font-bold rounded-t flex items-center">
+                <i class="fas fa-table mr-2"></i> My Calender
+            </div>
+
+            <div class="p-3">
+                <!-- Toolbar -->
+                <div class="flex justify-between items-center mb-4">
+                    <div class="cal-btn-group">
+                        <button class="cal-btn"><i class="fas fa-caret-left"></i></button>
+                        <button class="cal-btn"><i class="fas fa-caret-right"></i></button>
+                        <button class="cal-btn"><i class="far fa-calendar-alt text-[#333]"></i></button>
+                    </div>
+                    
+                    <div class="text-[18px] font-bold text-[#333]">March 2026</div>
+                    
+                    <div class="cal-btn-group">
+                        <button class="cal-btn active"><i class="far fa-calendar-alt"></i></button>
+                        <button class="cal-btn text-[#f0ad4e]"><i class="far fa-calendar-alt"></i></button>
+                        <button class="cal-btn font-bold text-[11px]">list</button>
+                    </div>
+                </div>
+
+                <!-- Calendar Grid -->
+                <table class="w-full table-fixed border-collapse">
+                    <thead>
+                        <tr class="text-[12px] text-[#333]">
+                            <th class="border border-[#ddd] py-1 text-center font-bold">Sun</th>
+                            <th class="border border-[#ddd] py-1 text-center font-bold">Mon</th>
+                            <th class="border border-[#ddd] py-1 text-center font-bold">Tue</th>
+                            <th class="border border-[#ddd] py-1 text-center font-bold">Wed</th>
+                            <th class="border border-[#ddd] py-1 text-center font-bold">Thu</th>
+                            <th class="border border-[#ddd] py-1 text-center font-bold">Fri</th>
+                            <th class="border border-[#ddd] py-1 text-center font-bold">Sat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- ROW 1 -->
+                        <tr>
+                            <td class="cal-cell"><span class="cal-date">1</span></td>
+                            <td class="cal-cell"><span class="cal-date">2</span>
+                                <div class="mt-4"><div class="event-pill event-green">09:00 Program Evaluation b...</div></div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">3</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-yellow">00:00 Additional Holiday (In...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                    <div class="event-pill event-green">09:00 Submission of propos...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">4</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-yellow">00:00 Holi</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">5</span>
+                                <div class="mt-4"><div class="event-pill event-green">09:00 Program Evaluation b...</div></div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">6</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Assessment of HVCO,...</div>
+                                    <div class="event-pill event-green">09:00 Constitution of Block I...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">7</span>
+                                <div class="mt-4"><div class="event-pill event-green">09:00 Program Evaluation b...</div></div>
+                            </td>
+                        </tr>
+
+                        <!-- ROW 2 -->
+                        <tr>
+                            <td class="cal-cell"><span class="cal-date">8</span>
+                                <div class="mt-4"><div class="event-pill event-green">09:00 Program Evaluation b...</div></div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">9</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Appointment of Obse...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">10</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Appointment of Evalu...</div>
+                                    <div class="event-pill event-green">09:00 Assessment of Even S...</div>
+                                    <div class="event-pill event-green">09:00 Assessment of HVCO,...</div>
+                                    <div class="event-pill event-green">09:00 Constitution of Block I...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">11</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Assessment of Even S...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">12</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Assessment of Even S...</div>
+                                    <div class="event-pill event-green">09:00 Assessment of HVCO,...</div>
+                                    <div class="event-pill event-green">09:00 Constitution of Block I...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">13</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Appointment of Evalu...</div>
+                                    <div class="event-pill event-green">09:00 Assessment of Even S...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">14</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- ROW 3 -->
+                        <tr>
+                            <td class="cal-cell"><span class="cal-date">15</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">16</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Appointment of Obse...</div>
+                                    <div class="event-pill event-green">09:00 Appointment of Evalu...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">17</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Appointment of Obse...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">18</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Appointment of ama...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                    <div class="event-pill event-green">09:00 Seating Plan</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">19</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Briefing of all Hols alo...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">20</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Last Class</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">21</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-yellow">00:00 Id-ul Fitr</div>
+                                    <div class="event-pill event-green">09:00 Last Class</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- ROW 4 -->
+                        <tr>
+                            <td class="cal-cell"><span class="cal-date">22</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">23</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Online approval of Exe...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                    <div class="event-pill event-green">09:00 Submission of Marks o...</div>
+                                    <div class="event-pill event-green">10:00 Online approval of Exe...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">24</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Date & Time for Block ...</div>
+                                    <div class="event-pill event-green">09:00 Generation of Admit c...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Printout of Admit Car...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">25</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Appointment of Obse...</div>
+                                    <div class="event-pill event-green">09:00 Appointment of Evalu...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                    <div class="event-pill event-green">09:00 Seating Plan</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">26</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-red-text">00:00 Closed Holiday(in lieu...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">09:00 Program Evaluation b...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">27</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-yellow text-[#8a6d3b]">working days -25th April an...</div>
+                                    <div class="event-pill event-green">09:00 Assessment of Practic...</div>
+                                    <div class="event-pill event-green">09:00 Last Class</div>
+                                    <span class="text-[#337ab7] text-[9px] hover:underline cursor-pointer ml-1 block mt-0.5">+2 more</span>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">28</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Assessment of HVCO,...</div>
+                                    <div class="event-pill event-green">09:00 Assessment of Practic...</div>
+                                    <div class="event-pill event-green">09:00 Last Class</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- ROW 5 -->
+                        <tr>
+                            <td class="cal-cell"><span class="cal-date">29</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Assessment of HVCO,...</div>
+                                    <div class="event-pill event-green">09:00 Assessment of Practic...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">30</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Assessment of HVCO,...</div>
+                                    <div class="event-pill event-green">09:00 Assessment of Practic...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                    <div class="event-pill event-green">10:00 Online approval of Exe...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell"><span class="cal-date">31</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green">09:00 Assessment of HVCO,...</div>
+                                    <div class="event-pill event-green">09:00 Assessment of Practic...</div>
+                                    <div class="event-pill event-green">09:00 Generation of Admit c...</div>
+                                    <div class="event-pill event-green">09:00 Last Session of GSSC...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell text-gray-400 bg-gray-50"><span class="cal-date opacity-50">1</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green opacity-60">09:00 Assessment of HVCO,...</div>
+                                    <div class="event-pill event-green opacity-60">09:00 Assessment of Practic...</div>
+                                    <div class="event-pill event-green opacity-60">09:00 Last Session of GSSC...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell text-gray-400 bg-gray-50"><span class="cal-date opacity-50">2</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green opacity-60">09:00 Assessment of HVCO,...</div>
+                                    <div class="event-pill event-green opacity-60">09:00 Conduct of End Seme...</div>
+                                    <div class="event-pill event-green opacity-60">09:00 Last Class</div>
+                                    <span class="text-[#337ab7] text-[9px] hover:underline cursor-pointer ml-1 block mt-0.5">+2 more</span>
+                                </div>
+                            </td>
+                            <td class="cal-cell text-gray-400 bg-gray-50"><span class="cal-date opacity-50">3</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-yellow opacity-60">00:00 Good Friday</div>
+                                    <div class="event-pill event-green opacity-60">09:00 Conduct of End Seme...</div>
+                                    <div class="event-pill event-green opacity-60">09:00 Last Session of GSSC...</div>
+                                </div>
+                            </td>
+                            <td class="cal-cell text-gray-400 bg-gray-50"><span class="cal-date opacity-50">4</span>
+                                <div class="mt-4">
+                                    <div class="event-pill event-green opacity-60">09:00 Conduct of End Seme...</div>
+                                    <div class="event-pill event-green opacity-60">09:00 Date & Time for Block ...</div>
+                                    <div class="event-pill event-green opacity-60">09:00 Last Session of GSSC...</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="../js/data.js"></script>
+    <script src="../js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fee Bill & Receipts | Amizone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Fee specific Tabs */
+        .fee-tabs { display: flex; justify-content: center; border-bottom: 1px solid #ddd; margin-bottom: 20px; overflow-x: auto; }
+        .f-tab { padding: 8px 15px; font-size: 13px; color: #777; cursor: pointer; border: 1px solid #ddd; border-bottom: none; background: #fff; margin-right: 4px; border-top-left-radius: 2px; border-top-right-radius: 2px; white-space: nowrap; }
+        .f-tab.active { background: #337ab7; color: #fff; border-color: #337ab7; }
+        
+        .fee-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; border: 1px solid #ddd; }
+        .fee-table th { background: #f5f5f5; color: #333; font-weight: bold; padding: 10px; border: 1px solid #ddd; text-align: left; }
+        .fee-table td { padding: 10px; border: 1px solid #ddd; color: #333; }
+        .fee-table tr:nth-child(even) td { background-color: #fcfcfc; }
+        
+        .blue-bar { background: #428bca; color: white; padding: 10px 15px; display: flex; align-items: center; margin-bottom: 15px; font-size: 13px; }
+        .blue-bar select { color: #333; padding: 4px; border-radius: 2px; border: 1px solid #ccc; width: 400px; max-width: 100%; margin-left: 20px; outline: none; }
+
+        .acc-header { background: #f9f9f9; border: 1px solid #ddd; padding: 10px 15px; color: #337ab7; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; }
+        .acc-content { border: 1px solid #ddd; border-top: none; padding: 15px; background: #fff; }
+        .fee-row { border: 1px solid #ddd; border-radius: 2px; padding: 12px 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        .fee-badge { background: #f0ad4e; color: white; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+
+        /* Print Modal Styles */
+        @media print {
+            body * { visibility: hidden; }
+            #receipt-modal, #receipt-modal * { visibility: visible; }
+            #receipt-modal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-[#e9ebee]">
+    <div id="page-content" class="p-4 bg-white m-2 border border-gray-200 min-h-[calc(100vh-65px)] relative">
+        
+        <div class="absolute top-4 right-4 no-print">
+            <a href="dashboard.html" class="flex items-center bg-[#005689] text-white px-4 py-2 rounded shadow-md hover:bg-blue-800 transition-colors text-xs font-bold uppercase tracking-wider">
+                <i class="fas fa-home mr-2"></i> Back to Home
+            </a>
+        </div>
+
+        <div class="text-[12px] text-gray-500 mb-4 flex items-center border-b pb-2">
+            <i class="fas fa-home mr-1 text-[#337ab7]"></i> <span class="text-[#337ab7]">Home</span> <span class="mx-1">></span> Fee Bill & Receipts
+        </div>
+
+        <h2 class="text-[#337ab7] text-[22px] font-normal mb-6">Fee Bill & Receipts</h2>
+
+        <div class="fee-tabs">
+            <div class="f-tab active" onclick="window.switchFeeTab('structure', this)">Fee Structure</div>
+            <div class="f-tab" onclick="window.switchFeeTab('bill', this)">Fee Bill</div>
+            <div class="f-tab" onclick="window.switchFeeTab('receipt', this)">Fee Receipt</div>
+            <div class="f-tab" onclick="window.switchFeeTab('it', this)">IT Certificate</div>
+            <div class="f-tab" onclick="window.switchFeeTab('misc', this)">Misc. Invoice</div>
+        </div>
+
+        <h3 class="text-[#333] text-[15px] mb-4 font-normal" id="dyn-prog-title">...</h3>
+        
+        <div id="tab-structure" class="fee-section block">
+            <div class="mb-2">
+                <div class="acc-header"><i class="fas fa-chevron-down mr-2 text-[11px]"></i> Academic Fee</div>
+                <div class="acc-content" id="academic-fee-list"></div>
+            </div>
+            <div class="mb-4"><div class="acc-header"><i class="fas fa-chevron-right mr-2 text-[11px]"></i> Hostel Fee</div></div>
+            <p class="text-[11px] text-[#333] mb-1">* Subject to change.</p>
+        </div>
+
+        <div id="tab-bill" class="fee-section hidden">
+            <div class="blue-bar">
+                <span>Select Semester</span>
+                <select id="bill-sem-select" onchange="window.renderBillAmount()"></select>
+            </div>
+            <div class="border border-gray-300 rounded mb-4 overflow-x-auto">
+                <table class="fee-table mb-0 border-none min-w-[600px]">
+                    <thead>
+                        <tr><th>Fee Type</th><th>Bill No</th><th>Last Date</th><th>Fee</th><th>Action</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>ACADEMIC</td><td id="bill-no">---</td><td>Nov 3 2025</td><td id="bill-amt">---</td><td class="text-[#337ab7]">Pay Full</td></tr>
+                        <tr class="bg-[#d9534f] text-white font-bold"><td colspan="3" class="text-right border-l-0 !bg-[#d9534f]">Total Amount</td><td id="bill-total" class="!bg-[#d9534f]">---</td><td class="!bg-[#d9534f]"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-receipt" class="fee-section hidden">
+            <div class="blue-bar justify-center">
+                <span class="mr-4">Fee Type</span>
+                <select class="w-[500px]"><option>Academic</option></select>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="fee-table min-w-[600px]">
+                    <thead>
+                        <tr><th>SNo</th><th>Receipt No.</th><th>Receipt Date</th><th>Receipt Amount</th><th>Print Receipt</th></tr>
+                    </thead>
+                    <tbody id="receipt-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-it" class="fee-section hidden text-center p-10 text-gray-400 italic">IT Certificate data not available.</div>
+        <div id="tab-misc" class="fee-section hidden text-center p-10 text-gray-400 italic">No Misc. Invoices found.</div>
+    </div>
+
+    <div id="receipt-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center bg-black/70 p-4">
+        <div class="bg-white w-full max-w-[800px] p-10 shadow-2xl relative overflow-y-auto max-h-[95vh]">
+            <div class="absolute top-4 right-4 space-x-3 no-print">
+                <button onclick="window.print()" class="bg-[#005689] text-white px-4 py-1.5 rounded text-xs font-bold shadow-sm hover:bg-blue-900 transition">
+                    <i class="fas fa-print mr-1"></i> PRINT
+                </button>
+                <button onclick="window.closeReceipt()" class="text-gray-400 hover:text-black">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div class="text-black bg-white p-2">
+                <div class="text-center mb-6 leading-tight">
+                    <h2 class="font-bold text-[18px] uppercase">AMITY UNIVERSITY NOIDA</h2>
+                    <p class="font-bold text-[13px]">PLOT NO 4, SECTOR 125, NOIDA. (UP)</p>
+                    <p class="font-bold text-[12px]">Phone - 91 120 4392000</p>
+                    <p class="font-bold text-[12px]">GSTIN Number - 09AAATR7314Q1ZW</p>
+                </div>
+
+                <div class="text-center font-bold underline mb-6 text-[15px]">Receipt</div>
+
+                <div class="flex justify-between font-bold text-[13px] mb-4">
+                    <span>Receipt No:- <span id="m-no"></span></span>
+                    <span>Date :- <span id="m-date"></span></span>
+                </div>
+
+                <table class="w-full text-[13px] border-collapse mb-8">
+                    <tr class="border-b border-gray-400">
+                        <td class="w-[200px] py-3 font-bold">Name of the Student</td>
+                        <td class="w-[30px] text-center font-bold">:</td>
+                        <td class="py-3 font-bold uppercase underline" id="m-name"></td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="py-3 font-bold">Enroll No. / Reg. No.</td>
+                        <td class="text-center font-bold">:</td>
+                        <td class="py-3 font-bold underline" id="m-enroll"></td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="py-3 font-bold">Form No. / Student No.</td>
+                        <td class="text-center font-bold">:</td>
+                        <td class="py-3 font-bold underline">10312575</td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="py-3 font-bold">Department</td>
+                        <td class="text-center font-bold">:</td>
+                        <td class="py-3 font-bold underline">Amity School of Engineering and Technology</td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="py-3 font-bold">Course/Batch</td>
+                        <td class="text-center font-bold">:</td>
+                        <td class="py-3 font-bold underline" id="m-course"></td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="py-3 font-bold">Amount (In Figure)</td>
+                        <td class="text-center font-bold">:</td>
+                        <td class="py-3 font-bold underline" id="m-amt"></td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="py-3 font-bold">In words</td>
+                        <td class="text-center font-bold">:</td>
+                        <td class="py-3 font-bold underline text-[11px]" id="m-words"></td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="py-3 font-bold">Amount Details</td>
+                        <td class="text-center font-bold">:</td>
+                        <td class="py-3 font-bold underline text-[12px]">[ NET BANKING] [TRANS NO :<span id="m-trans"></span>]</td>
+                    </tr>
+                </table>
+
+                <div class="flex justify-between items-start mt-4">
+                    <div class="font-bold text-[12px]">Note: Draft subject to realisation</div>
+                    <div class="text-right text-[11px] font-bold leading-tight max-w-[280px]">
+                        This is computer generated receipt, no authorised signatory required.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        // Global logic scoped to window for app.js compatibility
+        window.switchFeeTab = function(tabId, element) {
+            document.querySelectorAll('.fee-section').forEach(s => s.classList.replace('block', 'hidden'));
+            document.querySelectorAll('.f-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.replace('hidden', 'block');
+            element.classList.add('active');
+        };
+
+        window.renderBillAmount = function() {
+            const sem = document.getElementById('bill-sem-select').value;
+            const user = getUser();
+            const rec = user.feeReceipts.find(r => r.sno == sem);
+            const amt = rec ? rec.amount : "115000";
+            document.getElementById('bill-amt').innerText = amt;
+            document.getElementById('bill-total').innerText = amt;
+            document.getElementById('bill-no').innerText = "531" + sem + "306"; 
+        };
+
+        window.openReceipt = function(no, date, amount, sem) {
+            const user = getUser();
+            document.getElementById('m-no').innerText = no;
+            document.getElementById('m-date').innerText = date;
+            document.getElementById('m-name').innerText = user.name;
+            document.getElementById('m-enroll').innerText = user.id;
+            document.getElementById('m-course').innerText = user.program;
+            document.getElementById('m-amt').innerText = parseFloat(amount).toFixed(2);
+            document.getElementById('m-words').innerText = (window.numberToWords ? window.numberToWords(amount) : "AMOUNT RECEIVED") + " ONLY";
+            document.getElementById('m-trans').innerText = "47881" + sem + "87";
+            document.getElementById('receipt-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeReceipt = function() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        };
+
+        // Replacement function for your <script> tag in fees.html
+        window.numberToWords = function(amount) {
+            const units = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'];
+            const teens = ['TEN', 'ELEVEN', 'TWELVE', 'THIRTEEN', 'FOURTEEN', 'FIFTEEN', 'SIXTEEN', 'SEVENTEEN', 'EIGHTEEN', 'NINETEEN'];
+            const tens = ['', '', 'TWENTY', 'THIRTY', 'FORTY', 'FIFTY', 'SIXTY', 'SEVENTY', 'EIGHTY', 'NINETY'];
+            const scales = ['', 'THOUSAND', 'LAKH', 'CRORE'];
+
+            let num = parseInt(amount);
+            if (num === 0) return 'ZERO';
+
+            function convertChunk(n) {
+                let str = '';
+                if (n >= 100) {
+                    str += units[Math.floor(n / 100)] + ' HUNDRED ';
+                    n %= 100;
+                }
+                if (n >= 10 && n <= 19) {
+                    str += teens[n - 10] + ' ';
+                } else if (n >= 20 || n > 0) {
+                    str += tens[Math.floor(n / 10)] + ' ' + units[n % 10] + ' ';
+                }
+                return str;
+            }
+
+            // Specialized logic for Indian Numbering System (Lakhs/Crores)
+            let result = '';
+            let thousands = Math.floor((num / 1000) % 100);
+            let lakhs = Math.floor((num / 100000) % 100);
+            let remainder = num % 1000;
+
+            if (lakhs > 0) result += convertChunk(lakhs) + 'LAKH ';
+            if (thousands > 0) result += convertChunk(thousands) + 'THOUSAND ';
+            if (remainder > 0) result += convertChunk(remainder);
+
+            return result.trim() + " ONLY";
+        };
+
+        window.initFees = function() {
+            const user = getUser();
+            if(!user) return;
+
+            document.getElementById('dyn-prog-title').innerText = `${user.name} (${user.program}) : 2nd semester onwards`;
+
+            // Populate Structure
+            const structureBody = document.getElementById('academic-fee-list');
+            if(user.feeReceipts) {
+                structureBody.innerHTML = user.feeReceipts.filter(r => r.sno > 1).map(r => `
+                    <div class="fee-row">
+                        <span class="text-[13px] text-[#555]">Semester : ${r.sno} Academic</span>
+                        <span class="fee-badge">${r.amount}</span>
+                    </div>`).join('');
+            }
+
+            // Populate Receipts with View Trigger
+            const receiptBody = document.getElementById('receipt-body');
+            if(user.feeReceipts) {
+                receiptBody.innerHTML = user.feeReceipts.map(rec => `
+                    <tr>
+                        <td>${rec.sno}</td>
+                        <td>${rec.no}</td>
+                        <td>${rec.date}</td>
+                        <td>${rec.amount}</td>
+                        <td>
+                            <button onclick="window.openReceipt('${rec.no}', '${rec.date}', '${rec.amount}', '${rec.sno}')" class="text-[#337ab7] font-bold hover:underline">
+                                Print
+                            </button>
+                        </td>
+                    </tr>`).join('');
+            }
+
+            // Sem Select
+            const semSelect = document.getElementById('bill-sem-select');
+            if(semSelect) {
+                let options = '';
+                for(let i = user.semester; i >= 1; i--) options += `<option value="${i}">${i}</option>`;
+                semSelect.innerHTML = options;
+                window.renderBillAmount();
+            }
+        };
+
+        // Initialize immediately if not inside shell, otherwise app.js triggers it
+        if (!document.getElementById('amizone-shell')) {
+            window.initFees();
+        }
+    </script>
+</body>
+</html>

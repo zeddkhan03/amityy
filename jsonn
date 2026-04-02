@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Deepak",
+    "enrollment_id": "A03176821034",
+    "password": "10082006"
+  },
+  {
+    "name": "Kadam Krushna Kailas",
+    "enrollment_id": "A03176821088",
+    "password": "09082006"
+  },
+  {
+    "name": "Kshitij Negi",
+    "enrollment_id": "A03176821095",
+    "password": "17072004"
+  },
+  {
+    "name": "Kishan Kanhaiya",
+    "enrollment_id": "A03176829999",
+    "password": "05022002"
+  },
+  {
+    "name": "Adarsh Tyagi",
+    "enrollment_id": "A03176821068",
+    "password": "23052004"
+  },
+  {
+    "name": "Sumit Kumar",
+    "enrollment_id": "A03176821010",
+    "password": "22042002"
+  },
+  {
+    "name": "Aadil Malik",
+    "enrollment_id": "A03176821076",
+    "password": "30012005"
+  },
+  {
+    "name": "Sourabh",
+    "enrollment_id": "A03176821079",
+    "password": "08092006"
+  },
+  {
+    "name": "Ankur Kumar",
+    "enrollment_id": "A0317682134",
+    "password": "07072005"
+  },
+  {
+    "name": "Dharmender",
+    "enrollment_id": "A03176821017",
+    "password": "08082004"
+  }
+]

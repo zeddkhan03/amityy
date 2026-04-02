@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Table | Amizone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Specific Styles for Time Table */
+        .tt-title { color: #5a93c4; font-size: 20px; font-weight: 300; margin-bottom: 20px; }
+        
+        /* Tabs Sidebar */
+        .tt-tabs-container { width: 160px; min-width: 160px; z-index: 10; }
+        .tt-tab { padding: 10px 15px; border: 1px solid #ddd; border-bottom: none; cursor: pointer; display: flex; align-items: center; font-size: 13px; color: #999; background: #fbfbfb; transition: 0.2s; }
+        .tt-tab:last-child { border-bottom: 1px solid #ddd; }
+        .tt-tab:hover { background: #f4f4f4; color: #555; }
+        .tt-tab.active { background: #fff; color: #555; border-left: 3px solid #337ab7; border-right: 1px solid #fff; margin-right: -1px; }
+        .tt-tab i { color: #c581a9; margin-right: 8px; font-size: 13px; }
+        
+        /* Content Area */
+        .tt-content { flex: 1; border-left: 1px solid #ddd; padding: 0 0 0 20px; min-height: 400px; display: flex; overflow-x: auto; gap: 10px; padding-bottom: 20px; }
+        
+        /* Class Cards */
+        .tt-card { border: 1px solid #e0e0e0; width: 155px; min-width: 155px; background: #fff; border-radius: 2px; display: flex; flex-column: column;
+        height: fit-content; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .tt-card-header { background: #00b0f0; color: #fff; text-align: center; padding: 6px; font-size: 11px; font-weight: bold; }
+        .tt-card-body { padding: 12px 8px; text-align: center; font-size: 11px; display: flex; flex-direction: column; gap: 6px; }
+        .tt-code { color: #337ab7; font-size: 12px; }
+        .tt-faculty { color: #800000; line-height: 1.3; }
+        .tt-room { color: #555; }
+        
+        /* Custom Scrollbar for Cards */
+        .tt-content::-webkit-scrollbar { height: 6px; }
+        .tt-content::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-[#e9ebee]">
+    <!-- THIS CONTENT IS INJECTED INTO THE MAIN AREA BY APP.JS -->
+    <div class="p-3 bg-white m-2 border border-gray-200 min-h-[calc(100vh-65px)]">
+        
+        <!-- Breadcrumb -->
+        <div class="text-[12px] text-[#777] mb-6 flex items-center border-b pb-2">
+            <i class="fas fa-home mr-1 text-[#337ab7]"></i> <span class="text-[#337ab7]">Home</span> <span class="mx-1">></span> Time Table
+        </div>
+
+        <h2 class="tt-title">WEEKLY TIME SCHEDULE</h2>
+
+        <!-- Layout Container -->
+        <div class="flex mt-6">
+            
+            <!-- Left Sidebar Tabs -->
+            <div class="tt-tabs-container">
+                <div class="tt-tab active" onclick="changeDay('Monday', this)"><i class="far fa-calendar-alt"></i> Monday</div>
+                <div class="tt-tab" onclick="changeDay('Tuesday', this)"><i class="far fa-calendar-alt"></i> Tuesday</div>
+                <div class="tt-tab" onclick="changeDay('Wednesday', this)"><i class="far fa-calendar-alt"></i> Wednesday</div>
+                <div class="tt-tab" onclick="changeDay('Thursday', this)"><i class="far fa-calendar-alt"></i> Thursday</div>
+                <div class="tt-tab" onclick="changeDay('Friday', this)"><i class="far fa-calendar-alt"></i> Friday</div>
+                <div class="tt-tab" onclick="changeDay('Saturday', this)"><i class="far fa-calendar-alt"></i> Saturday</div>
+                <div class="tt-tab" onclick="changeDay('Sunday', this)"><i class="far fa-calendar-alt"></i> Sunday</div>
+            </div>
+
+            <!-- Right Content Area (Cards) -->
+            <div class="tt-content" id="timetable-container">
+                <!-- Cards will be injected here via JS -->
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        // --- DYNAMIC TIMETABLE DATABASE ---
+        // Contains the exact data from your screenshot for Monday, and generated data for other days
+        const scheduleData = {
+            "Monday": [
+                { time: "09:15 to 10:10", code: "BSU343", faculty: "Mr Neelabh Prajapati<br>[27275]", room: "217" },
+                { time: "10:15 to 11:10", code: "BP304T", faculty: "Dr V<br>Murugesan[306045]", room: "217" },
+                { time: "12:15 to 13:10", code: "BCU341", faculty: "Dr Archana<br>Sharma[306953],Dr<br>Sudhir Kumar<br>Agrawal[27462],Ms<br>Ishita Singh<br>Chouhan[306964]", room: "217" },
+                { time: "14:15 to 15:10", code: "BP302T", faculty: "Dr Ankit<br>Yadav[305693],Ms<br>Ankita Kishore[306693]", room: "217" },
+                { time: "15:15 to 16:10", code: "BP303T", faculty: "Mrs Monika<br>Kaushik[305006]", room: "217" },
+                { time: "16:15 to 17:10", code: "BP305T", faculty: "Yashwant<br>Ankit[305111]", room: "217" }
+            ],
+            "Tuesday": [
+                { time: "09:15 to 10:10", code: "BP302T", faculty: "Dr Ankit<br>Yadav[305693]", room: "217" },
+                { time: "11:15 to 12:10", code: "BSU343", faculty: "Mr Neelabh Prajapati<br>[27275]", room: "217" },
+                { time: "13:15 to 15:10", code: "BCU341", faculty: "Dr Sudhir Kumar<br>Agrawal[27462]", room: "Lab 3" }
+            ],
+            "Wednesday": [
+                { time: "10:15 to 11:10", code: "BP304T", faculty: "Dr V<br>Murugesan[306045]", room: "217" },
+                { time: "11:15 to 12:10", code: "BP303T", faculty: "Mrs Monika<br>Kaushik[305006]", room: "217" },
+                { time: "14:15 to 16:10", code: "BP308P", faculty: "Yashwant<br>Ankit[305111]", room: "Lab 1" }
+            ],
+            "Thursday": [
+                { time: "09:15 to 11:10", code: "BCU341", faculty: "Ms Ishita Singh<br>Chouhan[306964]", room: "217" },
+                { time: "12:15 to 13:10", code: "BSU343", faculty: "Mr Neelabh Prajapati<br>[27275]", room: "217" }
+            ],
+            "Friday": [
+                { time: "09:15 to 10:10", code: "BP305T", faculty: "Yashwant<br>Ankit[305111]", room: "217" },
+                { time: "10:15 to 12:10", code: "BP309P", faculty: "Dr Ankit<br>Yadav[305693]", room: "Lab 2" }
+            ],
+            "Saturday": [],
+            "Sunday": []
+        };
+
+        // --- RENDERING ENGINE ---
+        function changeDay(day, element) {
+            // Update Active Tab Styling
+            document.querySelectorAll('.tt-tab').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+
+            // Render Cards
+            const container = document.getElementById('timetable-container');
+            const classes = scheduleData[day];
+            
+            if (!classes || classes.length === 0) {
+                container.innerHTML = `<div class="text-gray-400 italic mt-10 ml-10 text-[13px]">No classes scheduled for ${day}.</div>`;
+                return;
+            }
+
+            let html = '';
+            classes.forEach(cls => {
+                html += `
+                    <div class="tt-card">
+                        <div class="tt-card-header">${cls.time}</div>
+                        <div class="tt-card-body">
+                            <div class="tt-code">${cls.code}</div>
+                            <div class="tt-faculty">${cls.faculty}</div>
+                            <div class="tt-room">${cls.room}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Initialize with Monday on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            const mondayTab = document.querySelector('.tt-tab.active');
+            changeDay('Monday', mondayTab);
+        });
+    </script>
+</body>
+</html>

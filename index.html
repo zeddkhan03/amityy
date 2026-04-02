@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amizone – Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(180deg, #1f4e79 0%, #f4b400 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            width: 900px;
+            max-width: 95%;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .amizone-logo {
+            font-family: 'Times New Roman', serif;
+            font-size: 42px;
+            color: #fff;
+            letter-spacing: 2px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .amizone-logo span {
+            color: #1f4e79;
+            font-style: italic;
+            font-weight: bold;
+        }
+        .input-pill {
+            background: #e9e9e9;
+            border-radius: 50px;
+            border: 2px solid transparent;
+            padding: 12px 20px 12px 50px;
+            width: 100%;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .input-pill:focus {
+            border-color: #1f4e79;
+            background: #fff;
+            outline: none;
+        }
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 14px;
+        }
+        .cloudflare-box {
+            background: #313131;
+            border-radius: 4px;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .login-btn {
+            background: #5cb85c;
+            color: white;
+            border-radius: 50px;
+            padding: 12px;
+            width: 100%;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .login-btn:hover {
+            background: #4cae4c;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .promo-card {
+            background: linear-gradient(135deg, #000066 0%, #0000aa 100%);
+            border-radius: 10px;
+            color: white;
+            padding: 30px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-panel">
+        <div class="mb-10 pl-4">
+            <h1 class="amizone-logo">AMI<span>ZONE</span></h1>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            
+            <div class="hidden md:block">
+                <div class="promo-card relative overflow-hidden">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8a/Amity_University_logo.png/220px-Amity_University_logo.png" class="absolute top-4 right-4 w-20 bg-white p-1 rounded" alt="Amity Logo">
+                    <h2 class="text-5xl font-black text-yellow-400 leading-tight mb-4 uppercase">200<br>SCOPUS<br>H-INDEX</h2>
+                    <p class="text-lg opacity-90 leading-relaxed font-light">
+                        A reflection of the quality of hi-end research by Amity faculty and scientists.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <div class="w-full max-w-sm">
+                    <h3 class="text-2xl font-bold text-center mb-1">
+                        <span class="text-green-600 uppercase">Login</span> 
+                        <span class="text-blue-900 text-sm ml-2">STUDENT</span>
+                    </h3>
+                    <p class="text-center text-blue-700 text-xs font-semibold mb-1 cursor-pointer hover:underline">Click here for admin login</p>
+                    <p class="text-center text-gray-600 text-[10px] mb-6">Exam : <span class="text-blue-600">https://oe.amizone.net</span></p>
+
+                    <form id="loginForm" class="space-y-4">
+                        <div class="relative">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" id="username" class="input-pill" placeholder="User Name (Enrollment ID)" required>
+                        </div>
+
+                        <div class="relative">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" class="input-pill" placeholder="Password (DDMMYYYY)" required>
+                        </div>
+
+                        <div class="cloudflare-box">
+                            <div class="flex items-center">
+                                <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-check text-white text-[10px]"></i>
+                                </div>
+                                <span>Verification Successful</span>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[9px] font-bold text-orange-400">CLOUDFLARE</p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="login-btn">LOGIN</button>
+                    </form>
+
+                    <div class="mt-4 text-center">
+                        <a href="#" class="text-gray-500 text-[11px] italic hover:underline">Forgot Username / Password?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userInp = document.getElementById('username').value.trim();
+            const passInp = document.getElementById('password').value.trim();
+            
+            // Check if 'students' object exists from data.js
+            if (typeof students !== 'undefined') {
+                const student = students[userInp];
+
+                // Validate: User exists AND Password matches DOB (no dashes/slashes)
+                // Example: DOB 10-08-2006 becomes password 10082006
+                if (student && student.dob.replace(/[-/]/g, "") === passInp) {
+                    
+                    // 1. Save session data
+                    localStorage.setItem('logged_in_id', userInp);
+                    localStorage.setItem('isLoggedIn', 'true');
+                    
+                    // 2. Success Feedback (Legit Style)
+                    const btn = document.querySelector('.login-btn');
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFYING...';
+                    btn.style.background = "#1f4e79";
+
+                    // 3. Redirect
+                    setTimeout(() => {
+                        window.location.href = 'pages/dashboard.html';
+                    }, 800);
+
+                } else {
+                    alert("Authentication Failed!\n\nCheck your Enrollment ID.\nPassword is your Date of Birth (DDMMYYYY).");
+                }
+            } else {
+                alert("Database Error: Could not find 'js/data.js'. Make sure the file exists!");
+            }
+        });
+    </script>
+</body>
+</html>
